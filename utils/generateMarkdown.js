@@ -1,35 +1,78 @@
-function generateMarkdown(data) {
-    return `# ${data.title}
-    ${renderLicenseBadge(data.license)}
-    ## Description
-    ${data.projectDescription}
+const fs = require('fs');
+const inquirer = require('inquirer');
+const index = require('../index.js')
 
-    ## Table of Contents
-    * [Installation](#installation)
-    * [Usage](#usage)
-    * [License](#license)
-    * [Contributing](#contributing)
-    * [Tests](#tests)
-    * [Questions](#questions)
-    
-    ## Installation
-    ${data.installInfo}
 
-    ## Usage
-    ${data.usageInfo}
-    ${renderLicenseSection(data.license)}
+//function returns license badge based on which license is passed
 
-    ## Contributing
-    
-    ${data.contributionsInfo}
-    
-    ## Tests
-    ${data.testsInfo}
-    
-    ## Questions
-    My GitHub: [${data.githubUsername}](https://github.com/${data.githubUsername}) <br>
-    Email me: ${data.emailInfo}
-  `
+function renderLicenseBadge(license) {
+  let badge = '';
+  if (license === 'MIT') {
+    badge = '![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)'
+  } else if (license === 'Apache 2.0') {
+    badge = '![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)'
+  } else if (license === 'GPL v3.0') {
+    badge = '![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)'
+  } else {
+    badge = ""
   }
-  
-  module.exports = generateMarkdown;
+  return badge;
+}
+
+// function that returns license
+function renderLicenseLink(license) {
+  let licenseLink = '';
+  if (license === 'MIT') {
+    licenseLink = 'https://choosealicense.com/licenses/mit/'
+  } else if (license === 'Apache 2.0') {
+    licenseLink = 'https://www.gnu.org/licenses'
+  } else {
+    licenseLink = ""
+  }
+  return licenseLink;
+}
+
+// functions that returns the license
+function renderLicenseSection(license) {
+  let licenseSection = ''
+  if (license === 'None') {
+    licenseSection =
+      `License: ${license}`
+  }
+  return licenseSection;
+}
+
+// Markdown for the README.md
+function generateMarkdown(answer) {
+
+  return `
+# ${answer.title}
+## ${renderLicenseSection(answer.license)} ${renderLicenseBadge(answer.license)}
+### ${renderLicenseLink(answer.license)}
+## Table of Contents:
+###  * [Installation](#installation)
+###  * [Usage](#usage)
+###  * [License](#license)
+###  * [Contributors](#contributors)
+###  * [Tests](#tests)
+###  * [Questions](#questions)
+## Installation:
+### You must install the following for this app to function:
+### ${answer.installation}
+## Usage:
+### ${answer.usage}
+## Contributors:
+### ${answer.contributions}
+## Tests:
+### Run the following commands in your terminal to test this app:
+### ${answer.tests}
+## Questions:
+### If you have any questions, you may contact me at either
+### Github: https://github.com/${answer.askMe}
+### or
+### Email: ${answer.email}
+      `;
+}
+
+// exports
+module.exports = generateMarkdown;
